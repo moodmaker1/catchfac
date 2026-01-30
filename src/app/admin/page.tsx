@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { collection, query, getDocs, updateDoc, doc, Firestore } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { User, QuoteRequest } from "@/types";
+import { User, QuoteRequest, SellerTier } from "@/types";
 import { isAdmin } from "@/lib/admin";
 
 export default function AdminPage() {
@@ -65,7 +65,7 @@ export default function AdminPage() {
         totalSellers: sellers.length,
         totalBuyers: buyers.length,
         totalRequests: requests.length,
-        premiumSellers: sellers.filter(s => s.isPremium).length,
+        premiumSellers: sellers.filter(s => s.sellerTier === "PREMIUM" || s.isPremium).length,
       });
 
       setRecentUsers(users.sort((a, b) => 
@@ -81,7 +81,7 @@ export default function AdminPage() {
     }
   };
 
-  const togglePremium = async (userId: string, currentStatus: boolean) => {
+  const updateSellerTier = async (userId: string, newTier: SellerTier) => {
     const firestore = db as Firestore | undefined;
     if (!firestore) {
       alert("Firebase가 초기화되지 않았습니다");
@@ -95,14 +95,17 @@ export default function AdminPage() {
     
     try {
       await updateDoc(doc(firestore, "users", userId), {
-        isPremium: !currentStatus,
+        sellerTier: newTier,
+        // 하위 호환성을 위해 isPremium도 업데이트
+        isPremium: newTier === "PREMIUM",
       });
       // 성공 메시지
-      alert(`프리미엄 상태가 ${!currentStatus ? '설정' : '해제'}되었습니다.`);
+      const tierNames = { FREE: "무료", PLUS: "플러스", PREMIUM: "프리미엄" };
+      alert(`${tierNames[newTier]} 등급으로 변경되었습니다.`);
       fetchAdminData(); // 데이터 새로고침
     } catch (error: any) {
-      console.error("Error updating premium status:", error);
-      let errorMessage = "프리미엄 상태 변경 중 오류가 발생했습니다";
+      console.error("Error updating seller tier:", error);
+      let errorMessage = "등급 변경 중 오류가 발생했습니다";
       
       if (error.code === "permission-denied") {
         errorMessage = "권한이 없습니다. 관리자 권한을 확인해주세요.";
@@ -205,24 +208,32 @@ export default function AdminPage() {
                           </span>
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap text-sm">
-                          {u.isPremium ? (
-                            <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">프리미엄</span>
-                          ) : (
-                            <span className="text-gray-400">-</span>
-                          )}
+                          {(() => {
+                            const tier = u.sellerTier || (u.isPremium ? "PREMIUM" : "FREE");
+                            const tierConfig = {
+                              FREE: { label: "무료", className: "bg-gray-100 text-gray-800" },
+                              PLUS: { label: "플러스", className: "bg-blue-100 text-blue-800" },
+                              PREMIUM: { label: "프리미엄", className: "bg-yellow-100 text-yellow-800" },
+                            };
+                            const config = tierConfig[tier as keyof typeof tierConfig] || tierConfig.FREE;
+                            return (
+                              <span className={`px-2 py-1 text-xs font-medium rounded-full ${config.className}`}>
+                                {config.label}
+                              </span>
+                            );
+                          })()}
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap text-sm">
                           {u.userType === "SELLER" && (
-                            <button
-                              onClick={() => togglePremium(u.id, u.isPremium || false)}
-                              className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                                u.isPremium
-                                  ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                  : "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
-                              }`}
+                            <select
+                              value={u.sellerTier || (u.isPremium ? "PREMIUM" : "FREE")}
+                              onChange={(e) => updateSellerTier(u.id, e.target.value as SellerTier)}
+                              className="px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#DC2626]"
                             >
-                              {u.isPremium ? "해제" : "설정"}
-                            </button>
+                              <option value="FREE">무료</option>
+                              <option value="PLUS">플러스</option>
+                              <option value="PREMIUM">프리미엄</option>
+                            </select>
                           )}
                         </td>
                       </tr>

@@ -40,7 +40,8 @@ export default function SellerDetailPage() {
             description: data.description,
             categories: data.categories || [],
             region: data.region,
-            isPremium: data.isPremium || false,
+            sellerTier: data.sellerTier || (data.isPremium ? "PREMIUM" : "FREE"),
+            isPremium: data.isPremium || false, // 하위 호환성
             premiumUntil: data.premiumUntil?.toDate(),
             profileComplete: data.profileComplete,
           });
@@ -99,17 +100,29 @@ export default function SellerDetailPage() {
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              {seller.isPremium && (
-                <span className="flex items-center gap-1 bg-[#DC2626] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  <Image
-                    src="/images/badge-premium.png"
-                    alt="Premium"
-                    width={12}
-                    height={12}
-                  />
-                  프리미엄 파트너
-                </span>
-              )}
+              {(() => {
+                const tier = seller.sellerTier || (seller.isPremium ? "PREMIUM" : "FREE");
+                if (tier === "FREE") return null;
+                const tierConfig = {
+                  PLUS: { label: "플러스 파트너", bgColor: "bg-blue-500", textColor: "text-white" },
+                  PREMIUM: { label: "프리미엄 파트너", bgColor: "bg-[#DC2626]", textColor: "text-white" },
+                };
+                const config = tierConfig[tier as keyof typeof tierConfig];
+                if (!config) return null;
+                return (
+                  <span className={`flex items-center gap-1 ${config.bgColor} ${config.textColor} text-xs font-semibold px-3 py-1 rounded-full`}>
+                    {tier === "PREMIUM" && (
+                      <Image
+                        src="/images/badge-premium.png"
+                        alt="Premium"
+                        width={12}
+                        height={12}
+                      />
+                    )}
+                    {config.label}
+                  </span>
+                );
+              })()}
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               {seller.company}
@@ -156,7 +169,10 @@ export default function SellerDetailPage() {
 
         {/* Contact Card */}
         <div className="lg:col-span-1">
-          <div className={`card sticky top-24 ${seller.isPremium ? "border-2 border-[#DC2626]" : ""}`}>
+          <div className={`card sticky top-24 ${(() => {
+            const tier = seller.sellerTier || (seller.isPremium ? "PREMIUM" : "FREE");
+            return tier === "PREMIUM" ? "border-2 border-[#DC2626]" : tier === "PLUS" ? "border-2 border-blue-500" : "";
+          })()}`}>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               연락처
             </h2>

@@ -68,6 +68,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             company: userData.company,
             userType: userData.userType,
             createdAt: userData.createdAt?.toDate() || new Date(),
+            sellerTier: userData.sellerTier || (userData.isPremium ? "PREMIUM" : undefined),
+            isPremium: userData.isPremium, // 하위 호환성
             isAdmin: userData.isAdmin || false,
           });
           setNeedsProfile(false);

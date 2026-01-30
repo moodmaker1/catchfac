@@ -304,15 +304,17 @@ export default function Home() {
             description: data.description,
             categories: data.categories || [],
             region: data.region,
-            isPremium: data.isPremium || false,
+            sellerTier: data.sellerTier || (data.isPremium ? "PREMIUM" : "FREE"),
+            isPremium: data.isPremium || false, // 하위 호환성
           });
         });
 
-        // Sort: premium first, then by date
+        // Sort: PREMIUM > PLUS > FREE
         sellersData.sort((a, b) => {
-          if (a.isPremium && !b.isPremium) return -1;
-          if (!a.isPremium && b.isPremium) return 1;
-          return 0;
+          const tierOrder = { PREMIUM: 3, PLUS: 2, FREE: 1 };
+          const aTier = a.sellerTier || (a.isPremium ? "PREMIUM" : "FREE");
+          const bTier = b.sellerTier || (b.isPremium ? "PREMIUM" : "FREE");
+          return (tierOrder[bTier as keyof typeof tierOrder] || 1) - (tierOrder[aTier as keyof typeof tierOrder] || 1);
         });
 
         setSellers(sellersData.slice(0, 6)); // Show top 6
@@ -487,14 +489,27 @@ export default function Home() {
                   key={seller.id}
                   href={`/sellers/${seller.id}`}
                   className={`card card-hover block relative ${
-                    seller.isPremium ? "border-2 border-[#DC2626]" : ""
+                    (() => {
+                      const tier = seller.sellerTier || (seller.isPremium ? "PREMIUM" : "FREE");
+                      return tier === "PREMIUM" ? "border-2 border-[#DC2626]" : tier === "PLUS" ? "border-2 border-blue-500" : "";
+                    })()
                   }`}
                 >
-                  {seller.isPremium && (
-                    <div className="absolute -top-3 left-4 bg-[#DC2626] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                      프리미엄
-                    </div>
-                  )}
+                  {(() => {
+                    const tier = seller.sellerTier || (seller.isPremium ? "PREMIUM" : "FREE");
+                    if (tier === "FREE") return null;
+                    const tierConfig = {
+                      PLUS: { label: "플러스", bgColor: "bg-blue-500", textColor: "text-white" },
+                      PREMIUM: { label: "프리미엄", bgColor: "bg-[#DC2626]", textColor: "text-white" },
+                    };
+                    const config = tierConfig[tier as keyof typeof tierConfig];
+                    if (!config) return null;
+                    return (
+                      <div className={`absolute -top-3 left-4 ${config.bgColor} ${config.textColor} text-xs font-semibold px-3 py-1 rounded-full`}>
+                        {config.label}
+                      </div>
+                    );
+                  })()}
 
                   <div className="pt-2">
                     <h3 className="text-lg font-semibold text-gray-900 mb-1">

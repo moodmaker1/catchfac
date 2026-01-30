@@ -1,4 +1,5 @@
 export type UserType = "BUYER" | "SELLER";
+export type SellerTier = "FREE" | "PLUS" | "PREMIUM";
 
 export interface User {
   id: string;
@@ -12,11 +13,13 @@ export interface User {
   description?: string;
   categories?: string[];
   region?: string;
-  isPremium?: boolean;
+  sellerTier?: SellerTier; // FREE, PLUS, PREMIUM
   premiumUntil?: Date;
   profileComplete?: boolean;
   // 관리자 필드
   isAdmin?: boolean;
+  // 하위 호환성을 위한 필드 (deprecated)
+  isPremium?: boolean;
 }
 
 export type RequestStatus = "OPEN" | "CLOSED";

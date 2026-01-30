@@ -52,17 +52,19 @@ export default function SellersPage() {
             description: data.description,
             categories: data.categories || [],
             region: data.region,
-            isPremium: data.isPremium || false,
+            sellerTier: data.sellerTier || (data.isPremium ? "PREMIUM" : "FREE"),
+            isPremium: data.isPremium || false, // 하위 호환성
             premiumUntil: data.premiumUntil?.toDate(),
             profileComplete: data.profileComplete,
           });
         });
 
-        // 프리미엄 업체 먼저, 그 다음 일반 업체
+        // 등급 순서: PREMIUM > PLUS > FREE
         sellersData.sort((a, b) => {
-          if (a.isPremium && !b.isPremium) return -1;
-          if (!a.isPremium && b.isPremium) return 1;
-          return 0;
+          const tierOrder = { PREMIUM: 3, PLUS: 2, FREE: 1 };
+          const aTier = a.sellerTier || (a.isPremium ? "PREMIUM" : "FREE");
+          const bTier = b.sellerTier || (b.isPremium ? "PREMIUM" : "FREE");
+          return (tierOrder[bTier as keyof typeof tierOrder] || 1) - (tierOrder[aTier as keyof typeof tierOrder] || 1);
         });
 
         setSellers(sellersData);
@@ -86,11 +88,12 @@ export default function SellersPage() {
     return true;
   });
 
-  // 필터링 후에도 프리미엄 먼저
+  // 필터링 후에도 등급 순서 유지: PREMIUM > PLUS > FREE
   const sortedSellers = [...filteredSellers].sort((a, b) => {
-    if (a.isPremium && !b.isPremium) return -1;
-    if (!a.isPremium && b.isPremium) return 1;
-    return 0;
+    const tierOrder = { PREMIUM: 3, PLUS: 2, FREE: 1 };
+    const aTier = a.sellerTier || (a.isPremium ? "PREMIUM" : "FREE");
+    const bTier = b.sellerTier || (b.isPremium ? "PREMIUM" : "FREE");
+    return (tierOrder[bTier as keyof typeof tierOrder] || 1) - (tierOrder[aTier as keyof typeof tierOrder] || 1);
   });
 
   return (
@@ -155,20 +158,35 @@ export default function SellersPage() {
               key={seller.id}
               href={`/sellers/${seller.id}`}
               className={`card card-hover block relative ${
-                seller.isPremium ? "border-2 border-[#DC2626]" : ""
+                (() => {
+                  const tier = seller.sellerTier || (seller.isPremium ? "PREMIUM" : "FREE");
+                  return tier === "PREMIUM" ? "border-2 border-[#DC2626]" : tier === "PLUS" ? "border-2 border-blue-500" : "";
+                })()
               }`}
             >
-              {seller.isPremium && (
-                <div className="absolute -top-3 left-4 flex items-center gap-1 bg-[#DC2626] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  <Image
-                    src="/images/badge-premium.png"
-                    alt="Premium"
-                    width={12}
-                    height={12}
-                  />
-                  프리미엄
-                </div>
-              )}
+              {(() => {
+                const tier = seller.sellerTier || (seller.isPremium ? "PREMIUM" : "FREE");
+                if (tier === "FREE") return null;
+                const tierConfig = {
+                  PLUS: { label: "플러스", bgColor: "bg-blue-500", textColor: "text-white" },
+                  PREMIUM: { label: "프리미엄", bgColor: "bg-[#DC2626]", textColor: "text-white" },
+                };
+                const config = tierConfig[tier as keyof typeof tierConfig];
+                if (!config) return null;
+                return (
+                  <div className={`absolute -top-3 left-4 flex items-center gap-1 ${config.bgColor} ${config.textColor} text-xs font-semibold px-3 py-1 rounded-full`}>
+                    {tier === "PREMIUM" && (
+                      <Image
+                        src="/images/badge-premium.png"
+                        alt="Premium"
+                        width={12}
+                        height={12}
+                      />
+                    )}
+                    {config.label}
+                  </div>
+                );
+              })()}
 
               <div className="pt-2">
                 <div className="flex items-center gap-3 mb-3">
