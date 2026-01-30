@@ -132,30 +132,30 @@ function HeroSection() {
       {/* 어두운 오버레이 추가로 텍스트 가독성 향상 */}
       <div className="absolute inset-0 bg-black/50"></div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 py-32">
-        <p className="text-white text-lg mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] font-medium">부품 구매 고민의 순간</p>
-        <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
+        <p className="text-white text-2xl mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] font-medium">부품 구매 고민의 순간</p>
+        <h1 className="text-7xl md:text-8xl font-bold text-white mb-6 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
           catchfac
         </h1>
-        <p className="text-xl text-white mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] font-medium">
+        <p className="text-2xl md:text-3xl text-white mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] font-medium">
           흩어진 견적, 한 번에 잡다
         </p>
-        <div className="text-lg text-white/90 mb-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] max-w-2xl mx-auto space-y-2">
+        <div className="text-xl md:text-2xl text-white/90 mb-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] max-w-2xl mx-auto space-y-2">
           <p>제조업 중소기업을 위한 구매품 견적 비교 플랫폼.</p>
           <p>여러 업체의 견적을 한 번에 비교하고 최적의 가격과 납기를 선택하세요.</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           {user ? (
             user.userType === "BUYER" ? (
-              <Link href="/requests/new" className="btn-primary text-lg px-8 py-4">
+              <Link href="/requests/new" className="btn-primary text-xl md:text-2xl px-10 py-5">
                 견적 요청하기
               </Link>
             ) : (
-              <Link href="/requests" className="btn-primary text-lg px-8 py-4">
+              <Link href="/requests" className="btn-primary text-xl md:text-2xl px-10 py-5">
                 견적 요청 보기
               </Link>
             )
           ) : (
-            <Link href="/register" className="bg-[#DC2626] hover:bg-red-700 text-white text-xl md:text-2xl px-14 py-7 rounded-lg font-bold whitespace-nowrap transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <Link href="/register" className="bg-[#DC2626] hover:bg-red-700 text-white text-2xl md:text-3xl px-20 py-9 rounded-lg font-bold whitespace-nowrap transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
               지금 견적받기
             </Link>
           )}
