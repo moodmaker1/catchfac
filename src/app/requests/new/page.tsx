@@ -12,7 +12,9 @@ export default function NewRequestPage() {
   const router = useRouter();
 
   const [category, setCategory] = useState("");
+  const [categoryCustom, setCategoryCustom] = useState("");
   const [maker, setMaker] = useState("");
+  const [makerCustom, setMakerCustom] = useState("");
   const [partNumber, setPartNumber] = useState("");
   const [quantity, setQuantity] = useState("");
   const [desiredDelivery, setDesiredDelivery] = useState("");
@@ -63,12 +65,22 @@ export default function NewRequestPage() {
 
     setLoading(true);
 
+    // "기타" 선택 시 커스텀 값 사용
+    const finalCategory = category === "기타" ? categoryCustom : category;
+    const finalMaker = maker === "기타" ? makerCustom : maker;
+
+    if (!finalCategory || !finalMaker) {
+      setError("품목 카테고리와 메이커를 모두 입력해주세요");
+      setLoading(false);
+      return;
+    }
+
     try {
       await addDoc(collection(firestore, "quoteRequests"), {
         buyerId: user.id,
         buyerCompany: isAnonymous ? "익명" : user.company,
-        category,
-        maker,
+        category: finalCategory,
+        maker: finalMaker,
         partNumber,
         quantity: parseInt(quantity),
         desiredDelivery,
@@ -109,7 +121,12 @@ export default function NewRequestPage() {
             <select
               id="category"
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={(e) => {
+                setCategory(e.target.value);
+                if (e.target.value !== "기타") {
+                  setCategoryCustom("");
+                }
+              }}
               className="input-field"
               required
             >
@@ -120,6 +137,16 @@ export default function NewRequestPage() {
                 </option>
               ))}
             </select>
+            {category === "기타" && (
+              <input
+                type="text"
+                value={categoryCustom}
+                onChange={(e) => setCategoryCustom(e.target.value)}
+                className="input-field mt-3"
+                placeholder="품목 카테고리를 입력하세요"
+                required
+              />
+            )}
           </div>
 
           <div>
@@ -132,7 +159,12 @@ export default function NewRequestPage() {
             <select
               id="maker"
               value={maker}
-              onChange={(e) => setMaker(e.target.value)}
+              onChange={(e) => {
+                setMaker(e.target.value);
+                if (e.target.value !== "기타") {
+                  setMakerCustom("");
+                }
+              }}
               className="input-field"
               required
             >
@@ -143,6 +175,16 @@ export default function NewRequestPage() {
                 </option>
               ))}
             </select>
+            {maker === "기타" && (
+              <input
+                type="text"
+                value={makerCustom}
+                onChange={(e) => setMakerCustom(e.target.value)}
+                className="input-field mt-3"
+                placeholder="메이커를 입력하세요"
+                required
+              />
+            )}
           </div>
 
           <div>
