@@ -146,16 +146,16 @@ function HeroSection() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           {user ? (
             user.userType === "BUYER" ? (
-              <Link href="/requests/new" className="btn-primary text-2xl md:text-3xl px-20 py-9 font-bold">
+              <Link href="/requests/new" className="btn-primary text-2xl md:text-3xl px-40 py-18 font-bold">
                 견적 요청하기
               </Link>
             ) : (
-              <Link href="/requests" className="btn-primary text-2xl md:text-3xl px-20 py-9 font-bold">
+              <Link href="/requests" className="btn-primary text-2xl md:text-3xl px-40 py-18 font-bold">
                 견적 요청 보기
               </Link>
             )
           ) : (
-            <Link href="/register" className="bg-[#DC2626] hover:bg-red-700 text-white text-2xl md:text-3xl px-20 py-9 rounded-lg font-bold whitespace-nowrap transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <Link href="/register" className="bg-[#DC2626] hover:bg-red-700 text-white text-2xl md:text-3xl px-40 py-18 rounded-lg font-bold whitespace-nowrap transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
               지금 견적받기
             </Link>
           )}
