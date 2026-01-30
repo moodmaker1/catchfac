@@ -394,46 +394,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 왜 catchfac인가요? 섹션 */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-            왜 catchfac인가요?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="card text-center">
-              <div className="w-16 h-16 bg-[#DC2626] rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
-                ⏱
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">시간 절약</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                여러 업체에 직접 연락할 필요 없이 한 번의 요청으로 여러 견적을 받을 수 있습니다. 
-                견적 수신까지 평균 2시간 이내입니다.
-              </p>
-            </div>
-            <div className="card text-center">
-              <div className="w-16 h-16 bg-[#DC2626] rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
-                💰
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">가격 비교</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                여러 업체의 견적을 한눈에 비교하여 최적의 가격을 찾을 수 있습니다. 
-                평균 30%의 비용 절감 효과를 경험할 수 있습니다.
-              </p>
-            </div>
-            <div className="card text-center">
-              <div className="w-16 h-16 bg-[#DC2626] rounded-full flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
-                ✓
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">신뢰할 수 있는 업체</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                등록된 파트너 업체들은 검증된 업체들로, 안심하고 거래할 수 있습니다. 
-                프리미엄 파트너는 더욱 신뢰할 수 있습니다.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* 문제 해결 섹션 */}
       <section className="py-20 bg-white">
@@ -1023,128 +983,115 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA for Sellers */}
-      <section className="py-16 bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* 통합 CTA 섹션 - 파트너 + 최종 CTA */}
+      <section className="relative py-24 overflow-hidden">
+        {/* 배경 이미지 */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-[url('/images/hero-desktop.jpg')] bg-cover bg-center"></div>
+        </div>
+        {/* 어두운 오버레이 */}
+        <div className="absolute inset-0 bg-black/40"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold text-white mb-4">
+            {/* 왼쪽: 파트너 섹션 */}
+            <div className="text-white">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-lg">
                 부품 업체이신가요?
               </h2>
-              <p className="text-gray-400 mb-6">
+              <p className="text-lg text-gray-200 mb-6 drop-shadow-md">
                 catchfac에 파트너로 등록하고 새로운 고객을 만나보세요.
                 프리미엄 파트너가 되면 상단 노출, 우선 알림 등 다양한 혜택을 받을 수 있습니다.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  href="/register"
-                  className="btn-primary text-center"
-                >
-                  무료로 등록하기
-                </Link>
-                <Link
-                  href="/sellers"
-                  className="btn-secondary text-center"
-                >
-                  파트너 업체 보기
-                </Link>
+              
+              {/* 파트너 혜택 */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-6 border border-white/20">
+                <h3 className="text-xl font-semibold text-white mb-4">파트너 혜택</h3>
+                <ul className="space-y-3 text-gray-200">
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#DC2626] mt-1 font-bold">✓</span>
+                    <span>신규 견적 요청 실시간 알림</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#DC2626] mt-1 font-bold">✓</span>
+                    <span>업체 프로필 페이지 제공</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-[#DC2626] mt-1 font-bold">✓</span>
+                    <span>구매자 직접 연결</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-yellow-400 mt-1 font-bold">★</span>
+                    <span className="text-yellow-400">프리미엄: 상단 노출 + 우선 알림</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* 버튼 */}
+              <Link
+                href="/register"
+                className="inline-block bg-white text-[#DC2626] font-bold text-lg px-8 py-4 rounded-lg hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
+                무료로 등록하기
+              </Link>
+            </div>
+
+            {/* 오른쪽: 통계 및 최종 CTA */}
+            <div>
+              <div className="text-center mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg">
+                  제조업 구매의 새로운 기준
+                </h2>
+                <p className="text-xl text-gray-200 mb-2 drop-shadow-md">
+                  catchfac과 함께 더 스마트한 구매를 시작하세요
+                </p>
+                <p className="text-lg text-gray-300 mb-6 drop-shadow-md">
+                  흩어진 견적, 한 번에 잡다
+                </p>
+              </div>
+
+              {/* 통계 카드 */}
+              <div className="grid grid-cols-3 gap-4 mb-8">
+                <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-white/20 shadow-lg text-center">
+                  <div className="text-3xl font-bold text-[#1e3a8a] mb-1">100+</div>
+                  <div className="text-sm text-gray-700">등록 업체</div>
+                </div>
+                <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-white/20 shadow-lg text-center">
+                  <div className="text-3xl font-bold text-[#1e3a8a] mb-1">1,000+</div>
+                  <div className="text-sm text-gray-700">견적 요청</div>
+                </div>
+                <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 border border-white/20 shadow-lg text-center">
+                  <div className="text-3xl font-bold text-[#1e3a8a] mb-1">30%</div>
+                  <div className="text-sm text-gray-700">평균 비용 절감</div>
+                </div>
+              </div>
+
+              {/* CTA 버튼 */}
+              <div className="flex justify-center">
+                {!user ? (
+                  <Link
+                    href="/register"
+                    className="inline-block bg-[#DC2626] text-white font-bold text-xl md:text-2xl px-14 py-7 rounded-lg hover:bg-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 whitespace-nowrap"
+                  >
+                    지금 견적받기
+                  </Link>
+                ) : (
+                  <Link
+                    href={user.userType === "BUYER" ? "/requests/new" : "/requests"}
+                    className="inline-block bg-[#DC2626] text-white font-bold text-lg px-10 py-5 rounded-lg hover:bg-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                  >
+                    {user.userType === "BUYER" ? "견적 요청하기" : "견적 요청 보기"}
+                  </Link>
+                )}
+              </div>
+
+              {/* 추가 메시지 */}
+              <div className="mt-6 text-center">
+                <p className="text-white/90 text-sm drop-shadow-md">
+                  ✓ 무료 회원가입  ✓ 즉시 이용 가능  ✓ 별도 계약 없음
+                </p>
               </div>
             </div>
-            <div className="bg-gray-800 rounded-xl p-8">
-              <h3 className="text-xl font-semibold text-white mb-4">파트너 혜택</h3>
-              <ul className="space-y-3 text-gray-300">
-                <li className="flex items-start gap-3">
-                  <span className="text-[#DC2626] mt-1">✓</span>
-                  <span>신규 견적 요청 실시간 알림</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-[#DC2626] mt-1">✓</span>
-                  <span>업체 프로필 페이지 제공</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-[#DC2626] mt-1">✓</span>
-                  <span>구매자 직접 연결</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-yellow-500 mt-1">★</span>
-                  <span className="text-yellow-500">프리미엄: 상단 노출 + 우선 알림</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA Section - 부드러운 버전 */}
-      <section className="relative py-24 bg-gradient-to-br from-gray-50 to-white overflow-hidden">
-        {/* 배경 패턴 */}
-        <div className="absolute inset-0 opacity-80">
-          <div className="absolute inset-0 bg-[url('/images/hero-desktop.jpg')] bg-cover bg-center"></div>
-        </div>
-        {/* 어두운 오버레이 추가 */}
-        <div className="absolute inset-0 bg-black/30"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
-              제조업 구매의 새로운 기준
-            </h2>
-            <p className="text-xl text-gray-100 mb-4 drop-shadow-md">
-              catchfac과 함께 더 스마트한 구매를 시작하세요
-            </p>
-            <p className="text-lg text-gray-200 mb-8 drop-shadow-md">
-              흩어진 견적, 한 번에 잡다
-            </p>
-          </div>
-
-          {/* 통계/신뢰 요소 */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 border border-white/20 shadow-lg">
-              <div className="text-4xl font-bold text-[#1e3a8a] mb-2">100+</div>
-              <div className="text-gray-700">등록 업체</div>
-            </div>
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 border border-white/20 shadow-lg">
-              <div className="text-4xl font-bold text-[#1e3a8a] mb-2">1,000+</div>
-              <div className="text-gray-700">견적 요청</div>
-            </div>
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 border border-white/20 shadow-lg">
-              <div className="text-4xl font-bold text-[#1e3a8a] mb-2">30%</div>
-              <div className="text-gray-700">평균 비용 절감</div>
-            </div>
-          </div>
-
-          {/* CTA 버튼 */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {!user ? (
-              <>
-                <Link
-                  href="/register"
-                  className="inline-block bg-[#DC2626] text-white font-bold text-xl md:text-2xl px-14 py-7 rounded-lg hover:bg-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 whitespace-nowrap"
-                >
-                  지금 견적받기
-                </Link>
-                <Link
-                  href="/sellers"
-                  className="inline-block bg-white border-2 border-gray-300 text-gray-700 font-bold text-lg px-10 py-5 rounded-lg hover:bg-gray-50 transition-all whitespace-nowrap"
-                >
-                  파트너 업체 보기
-                </Link>
-              </>
-            ) : (
-              <Link
-                href={user.userType === "BUYER" ? "/requests/new" : "/requests"}
-                className="inline-block bg-[#DC2626] text-white font-bold text-lg px-10 py-5 rounded-lg hover:bg-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-              >
-                {user.userType === "BUYER" ? "견적 요청하기" : "견적 요청 보기"}
-              </Link>
-            )}
-          </div>
-
-          {/* 추가 메시지 */}
-          <div className="mt-12 text-center">
-            <p className="text-white/90 text-sm drop-shadow-md">
-              ✓ 무료 회원가입  ✓ 즉시 이용 가능  ✓ 별도 계약 없음
-            </p>
           </div>
         </div>
       </section>
