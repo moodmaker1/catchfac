@@ -14,6 +14,14 @@ export default function CompleteProfilePage() {
   const { firebaseUser, user, needsProfile, completeProfile, loading: authLoading } = useAuth();
   const router = useRouter();
 
+  // sessionStorage에서 사용자 유형 가져오기
+  useEffect(() => {
+    const pendingUserType = sessionStorage.getItem("pendingUserType") as UserType;
+    if (pendingUserType && (pendingUserType === "BUYER" || pendingUserType === "SELLER")) {
+      setUserType(pendingUserType);
+    }
+  }, []);
+
   useEffect(() => {
     // 이미 프로필이 완성된 경우 메인으로
     if (!authLoading && user) {
@@ -46,6 +54,8 @@ export default function CompleteProfilePage() {
 
     try {
       await completeProfile(name, company, userType);
+      // 프로필 완성 후 sessionStorage 정리
+      sessionStorage.removeItem("pendingUserType");
       router.push("/");
     } catch (err) {
       console.error("Error completing profile:", err);

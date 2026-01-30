@@ -61,10 +61,19 @@ export default function RegisterPage() {
   };
 
   const handleGoogleLogin = async () => {
+    // 사용자 유형이 선택되지 않았으면 에러 표시
+    if (!userType) {
+      setError("사용자 유형을 먼저 선택해주세요");
+      return;
+    }
+
     setError("");
     setLoading(true);
 
     try {
+      // 선택한 사용자 유형을 sessionStorage에 저장
+      sessionStorage.setItem("pendingUserType", userType);
+      
       const result = await signInWithGoogle();
       if (result.isNewUser) {
         router.push("/complete-profile");
@@ -91,11 +100,44 @@ export default function RegisterPage() {
         </div>
 
         <div className="card">
+          {/* User Type Selection - 먼저 표시 */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              사용자 유형 선택
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setUserType("BUYER")}
+                className={`p-4 rounded-lg border-2 text-center transition-colors ${
+                  userType === "BUYER"
+                    ? "border-[#DC2626] bg-red-50 text-[#DC2626]"
+                    : "border-gray-200 text-gray-600 hover:border-gray-300"
+                }`}
+              >
+                <div className="font-semibold mb-1">구매자</div>
+                <div className="text-xs opacity-70">견적 요청</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => setUserType("SELLER")}
+                className={`p-4 rounded-lg border-2 text-center transition-colors ${
+                  userType === "SELLER"
+                    ? "border-[#DC2626] bg-red-50 text-[#DC2626]"
+                    : "border-gray-200 text-gray-600 hover:border-gray-300"
+                }`}
+              >
+                <div className="font-semibold mb-1">판매자</div>
+                <div className="text-xs opacity-70">견적 제출</div>
+              </button>
+            </div>
+          </div>
+
           {/* Google Login Button */}
           <button
             type="button"
             onClick={handleGoogleLogin}
-            disabled={loading}
+            disabled={loading || !userType}
             className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 font-medium py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -131,39 +173,6 @@ export default function RegisterPage() {
                 {error}
               </div>
             )}
-
-            {/* User Type Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                사용자 유형
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setUserType("BUYER")}
-                  className={`p-4 rounded-lg border-2 text-center transition-colors ${
-                    userType === "BUYER"
-                      ? "border-[#DC2626] bg-red-50 text-[#DC2626]"
-                      : "border-gray-200 text-gray-600 hover:border-gray-300"
-                  }`}
-                >
-                  <div className="font-semibold mb-1">구매자</div>
-                  <div className="text-xs opacity-70">견적 요청</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setUserType("SELLER")}
-                  className={`p-4 rounded-lg border-2 text-center transition-colors ${
-                    userType === "SELLER"
-                      ? "border-[#DC2626] bg-red-50 text-[#DC2626]"
-                      : "border-gray-200 text-gray-600 hover:border-gray-300"
-                  }`}
-                >
-                  <div className="font-semibold mb-1">판매자</div>
-                  <div className="text-xs opacity-70">견적 제출</div>
-                </button>
-              </div>
-            </div>
 
             <div>
               <label
