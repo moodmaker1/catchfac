@@ -17,6 +17,7 @@ export default function NewRequestPage() {
   const [quantity, setQuantity] = useState("");
   const [desiredDelivery, setDesiredDelivery] = useState("");
   const [note, setNote] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -65,7 +66,7 @@ export default function NewRequestPage() {
     try {
       await addDoc(collection(firestore, "quoteRequests"), {
         buyerId: user.id,
-        buyerCompany: user.company,
+        buyerCompany: isAnonymous ? "익명" : user.company,
         category,
         maker,
         partNumber,
@@ -74,6 +75,7 @@ export default function NewRequestPage() {
         note,
         status: "OPEN",
         createdAt: new Date(),
+        isAnonymous: isAnonymous,
       });
 
       router.push("/requests");
@@ -213,6 +215,29 @@ export default function NewRequestPage() {
               rows={3}
               placeholder="추가 요청사항이 있으시면 입력해주세요"
             />
+          </div>
+
+          <div className="border-t border-gray-200 pt-6">
+            <div className="flex items-start">
+              <input
+                type="checkbox"
+                id="isAnonymous"
+                checked={isAnonymous}
+                onChange={(e) => setIsAnonymous(e.target.checked)}
+                className="h-4 w-4 text-[#DC2626] focus:ring-[#DC2626] border-gray-300 rounded mt-1"
+              />
+              <div className="ml-3">
+                <label
+                  htmlFor="isAnonymous"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  익명으로 견적 요청하기
+                </label>
+                <p className="text-xs text-gray-500 mt-1">
+                  체크 시 업체명이 판매자에게 표시되지 않습니다. 객관적인 견적 비교를 위해 권장합니다.
+                </p>
+              </div>
+            </div>
           </div>
 
           <div className="flex gap-3 pt-4">

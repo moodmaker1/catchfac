@@ -77,6 +77,7 @@ export default function RequestsPage() {
             note: data.note,
             status: data.status,
             createdAt: data.createdAt?.toDate() || new Date(),
+            isAnonymous: data.isAnonymous || false,
             responseCount: responsesCount.data().count,
           });
         }
@@ -175,7 +176,7 @@ export default function RequestsPage() {
                 <span>희망 납기: {request.desiredDelivery}</span>
                 <span>받은 견적: {request.responseCount}건</span>
                 {user.userType === "SELLER" && (
-                  <span>요청업체: {request.buyerCompany}</span>
+                  <span>요청업체: {request.isAnonymous ? "익명" : request.buyerCompany}</span>
                 )}
               </div>
 

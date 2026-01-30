@@ -31,6 +31,7 @@ export interface QuoteRequest {
   note: string;
   status: RequestStatus;
   createdAt: Date;
+  isAnonymous?: boolean; // 익명 요청 여부
 }
 
 export interface QuoteResponse {

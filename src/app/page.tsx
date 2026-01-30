@@ -157,7 +157,7 @@ function HeroSection() {
           ) : (
             <>
               <Link href="/register" className="btn-primary text-lg px-8 py-4">
-                무료로 시작하기
+                견적받기
               </Link>
               <Link href="/sellers" className="btn-secondary text-lg px-8 py-4">
                 파트너 업체 보기
@@ -1126,7 +1126,7 @@ export default function Home() {
                   href="/register"
                   className="inline-block bg-[#DC2626] text-white font-bold text-lg px-10 py-5 rounded-lg hover:bg-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
                 >
-                  무료로 시작하기
+                  견적받기
                 </Link>
                 <Link
                   href="/sellers"

@@ -74,6 +74,7 @@ export default function RequestDetailPage() {
           note: requestData.note,
           status: requestData.status,
           createdAt: requestData.createdAt?.toDate() || new Date(),
+          isAnonymous: requestData.isAnonymous || false,
         });
 
         // Fetch responses
@@ -277,7 +278,9 @@ export default function RequestDetailPage() {
           </div>
           <div>
             <span className="text-gray-400 block">요청업체</span>
-            <span className="font-medium text-gray-900">{request.buyerCompany}</span>
+            <span className="font-medium text-gray-900">
+              {request.isAnonymous ? "익명" : request.buyerCompany}
+            </span>
           </div>
           <div>
             <span className="text-gray-400 block">등록일</span>
