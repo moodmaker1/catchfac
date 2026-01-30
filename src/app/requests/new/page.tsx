@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { collection, addDoc, Firestore } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { CATEGORIES, MAKERS } from "@/types";
+import { MAIN_CATEGORIES, SUB_CATEGORIES, MAKERS } from "@/types";
 
 export default function NewRequestPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
 
-  const [category, setCategory] = useState("");
+  const [mainCategory, setMainCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
   const [categoryCustom, setCategoryCustom] = useState("");
   const [maker, setMaker] = useState("");
   const [makerCustom, setMakerCustom] = useState("");
@@ -65,8 +66,16 @@ export default function NewRequestPage() {
 
     setLoading(true);
 
-    // "기타" 선택 시 커스텀 값 사용
-    const finalCategory = category === "기타" ? categoryCustom : category;
+    // 카테고리 결정: 기타 > 중분류 > 대분류
+    let finalCategory = "";
+    if (mainCategory === "기타") {
+      finalCategory = categoryCustom || "기타";
+    } else if (subCategory) {
+      finalCategory = subCategory;
+    } else if (mainCategory) {
+      finalCategory = mainCategory;
+    }
+    
     const finalMaker = maker === "기타" ? makerCustom : maker;
 
     if (!finalCategory || !finalMaker) {
@@ -113,40 +122,65 @@ export default function NewRequestPage() {
 
           <div>
             <label
-              htmlFor="category"
+              htmlFor="mainCategory"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
               품목 카테고리
             </label>
-            <select
-              id="category"
-              value={category}
-              onChange={(e) => {
-                setCategory(e.target.value);
-                if (e.target.value !== "기타") {
-                  setCategoryCustom("");
-                }
-              }}
-              className="input-field"
-              required
-            >
-              <option value="">선택하세요</option>
-              {CATEGORIES.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-            {category === "기타" && (
-              <input
-                type="text"
-                value={categoryCustom}
-                onChange={(e) => setCategoryCustom(e.target.value)}
-                className="input-field mt-3"
-                placeholder="품목 카테고리를 입력하세요"
+            <div className="space-y-3">
+              {/* 대분류 선택 */}
+              <select
+                id="mainCategory"
+                value={mainCategory}
+                onChange={(e) => {
+                  setMainCategory(e.target.value);
+                  setSubCategory(""); // 대분류 변경 시 중분류 초기화
+                  setCategoryCustom(""); // 커스텀 값 초기화
+                }}
+                className="input-field"
                 required
-              />
-            )}
+              >
+                <option value="">대분류를 선택하세요</option>
+                {MAIN_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+
+              {/* 중분류 선택 (대분류가 선택되고 "기타"가 아닐 때만 표시) */}
+              {mainCategory && mainCategory !== "기타" && SUB_CATEGORIES[mainCategory] && (
+                <select
+                  id="subCategory"
+                  value={subCategory}
+                  onChange={(e) => {
+                    setSubCategory(e.target.value);
+                    setCategoryCustom("");
+                  }}
+                  className="input-field"
+                  required
+                >
+                  <option value="">중분류를 선택하세요</option>
+                  {SUB_CATEGORIES[mainCategory].map((subCat) => (
+                    <option key={subCat} value={subCat}>
+                      {subCat}
+                    </option>
+                  ))}
+                </select>
+              )}
+
+              {/* 기타 선택 시 직접 입력 */}
+              {mainCategory === "기타" && (
+                <input
+                  type="text"
+                  value={categoryCustom}
+                  onChange={(e) => setCategoryCustom(e.target.value)}
+                  className="input-field"
+                  placeholder="품목 카테고리를 직접 입력하세요"
+                  required
+                />
+              )}
+            </div>
           </div>
 
           <div>
