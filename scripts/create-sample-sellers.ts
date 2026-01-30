@@ -45,7 +45,9 @@ if (!getApps().length) {
 // Firestore 데이터베이스 초기화
 // 명시적으로 기본 데이터베이스 ID 지정
 // 참고: 데이터베이스 위치는 자동으로 감지됩니다
-let db;
+import { Firestore } from "firebase-admin/firestore";
+
+let db: Firestore;
 try {
   // 먼저 기본 데이터베이스로 시도
   db = getFirestore(undefined, "(default)");
