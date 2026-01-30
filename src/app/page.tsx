@@ -116,7 +116,7 @@ function HeroSection() {
   }, [currentVideoIndex, videos.length]);
 
   return (
-    <section className="relative bg-gradient-to-b from-gray-50 to-white pt-32 pb-20 overflow-hidden">
+    <section className="relative bg-gradient-to-b from-gray-50 to-white min-h-[85vh] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 opacity-70">
         <video
           ref={videoRef}
@@ -131,7 +131,7 @@ function HeroSection() {
       </div>
       {/* 어두운 오버레이 추가로 텍스트 가독성 향상 */}
       <div className="absolute inset-0 bg-black/50"></div>
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10 py-32">
         <p className="text-white text-lg mb-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] font-medium">부품 구매 고민의 순간</p>
         <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
           catchfac
@@ -143,7 +143,7 @@ function HeroSection() {
           <p>제조업 중소기업을 위한 구매품 견적 비교 플랫폼.</p>
           <p>여러 업체의 견적을 한 번에 비교하고 최적의 가격과 납기를 선택하세요.</p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           {user ? (
             user.userType === "BUYER" ? (
               <Link href="/requests/new" className="btn-primary text-lg px-8 py-4">
