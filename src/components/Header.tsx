@@ -104,6 +104,12 @@ export default function Header() {
                   </span>
                 </div>
                 <button
+                  onClick={() => setShowConsultationModal(true)}
+                  className="h-10 px-4 text-sm font-medium rounded-lg bg-[#1e3a8a] text-white hover:bg-blue-900 transition-colors"
+                >
+                  판매자 등록 문의
+                </button>
+                <button
                   onClick={handleSignOut}
                   className="h-10 px-4 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
                 >
