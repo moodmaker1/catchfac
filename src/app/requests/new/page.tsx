@@ -5,15 +5,12 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { collection, addDoc, Firestore } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { MAIN_CATEGORIES, SUB_CATEGORIES, MAKERS } from "@/types";
+import { MAKERS } from "@/types";
 
 export default function NewRequestPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
 
-  const [mainCategory, setMainCategory] = useState("");
-  const [subCategory, setSubCategory] = useState("");
-  const [categoryCustom, setCategoryCustom] = useState("");
   const [maker, setMaker] = useState("");
   const [makerCustom, setMakerCustom] = useState("");
   const [partNumber, setPartNumber] = useState("");
@@ -66,20 +63,10 @@ export default function NewRequestPage() {
 
     setLoading(true);
 
-    // 카테고리 결정: 기타 > 중분류 > 대분류
-    let finalCategory = "";
-    if (mainCategory === "기타") {
-      finalCategory = categoryCustom || "기타";
-    } else if (subCategory) {
-      finalCategory = subCategory;
-    } else if (mainCategory) {
-      finalCategory = mainCategory;
-    }
-    
     const finalMaker = maker === "기타" ? makerCustom : maker;
 
-    if (!finalCategory || !finalMaker) {
-      setError("품목 카테고리와 메이커를 모두 입력해주세요");
+    if (!finalMaker) {
+      setError("메이커를 입력해주세요");
       setLoading(false);
       return;
     }
@@ -88,7 +75,7 @@ export default function NewRequestPage() {
       await addDoc(collection(firestore, "quoteRequests"), {
         buyerId: user.id,
         buyerCompany: isAnonymous ? "익명" : user.company,
-        category: finalCategory,
+        category: "기타", // 카테고리 필드 제거 대신 기본값으로 저장
         maker: finalMaker,
         partNumber,
         quantity: parseInt(quantity),
@@ -119,69 +106,6 @@ export default function NewRequestPage() {
               {error}
             </div>
           )}
-
-          <div>
-            <label
-              htmlFor="mainCategory"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              품목 카테고리
-            </label>
-            <div className="space-y-3">
-              {/* 대분류 선택 */}
-              <select
-                id="mainCategory"
-                value={mainCategory}
-                onChange={(e) => {
-                  setMainCategory(e.target.value);
-                  setSubCategory(""); // 대분류 변경 시 중분류 초기화
-                  setCategoryCustom(""); // 커스텀 값 초기화
-                }}
-                className="input-field"
-                required
-              >
-                <option value="">대분류를 선택하세요</option>
-                {MAIN_CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-
-              {/* 중분류 선택 (대분류가 선택되고 "기타"가 아닐 때만 표시) */}
-              {mainCategory && mainCategory !== "기타" && SUB_CATEGORIES[mainCategory] && (
-                <select
-                  id="subCategory"
-                  value={subCategory}
-                  onChange={(e) => {
-                    setSubCategory(e.target.value);
-                    setCategoryCustom("");
-                  }}
-                  className="input-field"
-                  required
-                >
-                  <option value="">중분류를 선택하세요</option>
-                  {SUB_CATEGORIES[mainCategory].map((subCat) => (
-                    <option key={subCat} value={subCat}>
-                      {subCat}
-                    </option>
-                  ))}
-                </select>
-              )}
-
-              {/* 기타 선택 시 직접 입력 */}
-              {mainCategory === "기타" && (
-                <input
-                  type="text"
-                  value={categoryCustom}
-                  onChange={(e) => setCategoryCustom(e.target.value)}
-                  className="input-field"
-                  placeholder="품목 카테고리를 직접 입력하세요"
-                  required
-                />
-              )}
-            </div>
-          </div>
 
           <div>
             <label
