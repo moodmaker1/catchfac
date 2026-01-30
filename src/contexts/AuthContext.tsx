@@ -13,6 +13,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut as firebaseSignOut,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
@@ -22,6 +24,7 @@ interface AuthContextType {
   firebaseUser: FirebaseUser | null;
   user: User | null;
   loading: boolean;
+  needsProfile: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (
     email: string,
@@ -30,15 +33,20 @@ interface AuthContextType {
     company: string,
     userType: UserType
   ) => Promise<void>;
+  signInWithGoogle: () => Promise<{ isNewUser: boolean }>;
+  completeProfile: (name: string, company: string, userType: UserType) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const googleProvider = new GoogleAuthProvider();
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [needsProfile, setNeedsProfile] = useState(false);
 
   useEffect(() => {
     if (!auth) {
@@ -61,9 +69,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             userType: userData.userType,
             createdAt: userData.createdAt?.toDate() || new Date(),
           });
+          setNeedsProfile(false);
+        } else {
+          // 구글 로그인 후 프로필 정보가 없는 경우
+          setUser(null);
+          setNeedsProfile(true);
         }
       } else {
         setUser(null);
+        setNeedsProfile(false);
       }
 
       setLoading(false);
@@ -101,15 +115,62 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const signInWithGoogle = async () => {
+    if (!auth || !db) throw new Error("Firebase not initialized");
+    
+    const result = await signInWithPopup(auth, googleProvider);
+    const userDoc = await getDoc(doc(db, "users", result.user.uid));
+    
+    if (!userDoc.exists()) {
+      setNeedsProfile(true);
+      return { isNewUser: true };
+    }
+    
+    return { isNewUser: false };
+  };
+
+  const completeProfile = async (name: string, company: string, userType: UserType) => {
+    if (!auth || !db || !firebaseUser) throw new Error("Not authenticated");
+
+    await setDoc(doc(db, "users", firebaseUser.uid), {
+      email: firebaseUser.email,
+      name,
+      company,
+      userType,
+      createdAt: new Date(),
+    });
+
+    setUser({
+      id: firebaseUser.uid,
+      email: firebaseUser.email || "",
+      name,
+      company,
+      userType,
+      createdAt: new Date(),
+    });
+    setNeedsProfile(false);
+  };
+
   const signOut = async () => {
     if (!auth) return;
     await firebaseSignOut(auth);
     setUser(null);
+    setNeedsProfile(false);
   };
 
   return (
     <AuthContext.Provider
-      value={{ firebaseUser, user, loading, signIn, signUp, signOut }}
+      value={{ 
+        firebaseUser, 
+        user, 
+        loading, 
+        needsProfile,
+        signIn, 
+        signUp, 
+        signInWithGoogle,
+        completeProfile,
+        signOut 
+      }}
     >
       {children}
     </AuthContext.Provider>
