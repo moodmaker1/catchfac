@@ -155,7 +155,7 @@ function HeroSection() {
               </Link>
             )
           ) : (
-            <Link href="/register" className="bg-[#DC2626] hover:bg-red-700 text-white text-2xl md:text-3xl px-40 py-18 rounded-lg font-bold whitespace-nowrap transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+            <Link href="/register" className="bg-[#DC2626] hover:bg-red-700 text-white text-xl md:text-2xl px-20 py-9 rounded-lg font-bold whitespace-nowrap transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
               지금 견적받기
             </Link>
           )}
