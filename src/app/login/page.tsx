@@ -58,10 +58,15 @@ export default function LoginPage() {
         router.push("/");
       }
     } catch (err: any) {
+      console.error("Google login error:", err);
       if (err.code === "auth/popup-closed-by-user") {
         // 사용자가 팝업을 닫음 - 에러 표시 안함
+      } else if (err.code === "auth/unauthorized-domain") {
+        setError("이 도메인은 Firebase에서 승인되지 않았습니다. Firebase Console에서 도메인을 추가해주세요.");
+      } else if (err.code === "auth/operation-not-allowed") {
+        setError("Google 로그인이 활성화되지 않았습니다. Firebase Console에서 활성화해주세요.");
       } else {
-        setError("구글 로그인 중 오류가 발생했습니다");
+        setError(`구글 로그인 중 오류가 발생했습니다: ${err.code || err.message}`);
       }
     } finally {
       setLoading(false);

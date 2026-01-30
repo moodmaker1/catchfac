@@ -23,26 +23,34 @@ export default function Header() {
 
           <nav className="hidden md:flex items-center gap-6">
             <Link
-              href="/"
+              href="/sellers"
               className="text-gray-600 hover:text-gray-900 font-medium"
             >
-              시세 정보
+              파트너 업체
             </Link>
-            {user && (
+            {user && user.userType === "BUYER" && (
               <Link
                 href="/requests"
                 className="text-gray-600 hover:text-gray-900 font-medium"
               >
-                {user.userType === "BUYER" ? "내 견적 요청" : "견적 요청 목록"}
+                내 견적 요청
               </Link>
             )}
-            {user?.userType === "SELLER" && (
-              <Link
-                href="/my-quotes"
-                className="text-gray-600 hover:text-gray-900 font-medium"
-              >
-                제출한 견적
-              </Link>
+            {user && user.userType === "SELLER" && (
+              <>
+                <Link
+                  href="/requests"
+                  className="text-gray-600 hover:text-gray-900 font-medium"
+                >
+                  견적 요청
+                </Link>
+                <Link
+                  href="/sellers/edit"
+                  className="text-gray-600 hover:text-gray-900 font-medium"
+                >
+                  내 프로필
+                </Link>
+              </>
             )}
           </nav>
 
@@ -90,17 +98,35 @@ export default function Header() {
       {user && (
         <div className="md:hidden border-t border-gray-100 px-4 py-2">
           <div className="flex gap-4 text-sm">
-            <Link href="/" className="text-gray-600 hover:text-gray-900">
-              시세 정보
+            <Link href="/sellers" className="text-gray-600 hover:text-gray-900">
+              파트너 업체
             </Link>
-            <Link href="/requests" className="text-gray-600 hover:text-gray-900">
-              {user.userType === "BUYER" ? "내 견적 요청" : "견적 요청 목록"}
-            </Link>
-            {user.userType === "SELLER" && (
-              <Link href="/my-quotes" className="text-gray-600 hover:text-gray-900">
-                제출한 견적
+            {user.userType === "BUYER" && (
+              <Link href="/requests" className="text-gray-600 hover:text-gray-900">
+                내 견적 요청
               </Link>
             )}
+            {user.userType === "SELLER" && (
+              <>
+                <Link href="/requests" className="text-gray-600 hover:text-gray-900">
+                  견적 요청
+                </Link>
+                <Link href="/sellers/edit" className="text-gray-600 hover:text-gray-900">
+                  내 프로필
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Navigation for non-logged in */}
+      {!user && !loading && (
+        <div className="md:hidden border-t border-gray-100 px-4 py-2">
+          <div className="flex gap-4 text-sm">
+            <Link href="/sellers" className="text-gray-600 hover:text-gray-900">
+              파트너 업체
+            </Link>
           </div>
         </div>
       )}

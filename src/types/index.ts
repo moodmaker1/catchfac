@@ -7,6 +7,14 @@ export interface User {
   company: string;
   userType: UserType;
   createdAt: Date;
+  // 판매자 전용 필드
+  phone?: string;
+  description?: string;
+  categories?: string[];
+  region?: string;
+  isPremium?: boolean;
+  premiumUntil?: Date;
+  profileComplete?: boolean;
 }
 
 export type RequestStatus = "OPEN" | "CLOSED";
@@ -71,4 +79,25 @@ export const MAKERS = [
   "시멘스",
   "LS산전",
   "기타",
+] as const;
+
+export const REGIONS = [
+  "서울",
+  "경기",
+  "인천",
+  "부산",
+  "대구",
+  "광주",
+  "대전",
+  "울산",
+  "세종",
+  "강원",
+  "충북",
+  "충남",
+  "전북",
+  "전남",
+  "경북",
+  "경남",
+  "제주",
+  "전국",
 ] as const;
