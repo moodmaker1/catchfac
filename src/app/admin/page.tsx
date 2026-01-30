@@ -83,16 +83,34 @@ export default function AdminPage() {
 
   const togglePremium = async (userId: string, currentStatus: boolean) => {
     const firestore = db as Firestore | undefined;
-    if (!firestore) return;
+    if (!firestore) {
+      alert("Firebase가 초기화되지 않았습니다");
+      return;
+    }
+
+    if (!user || !isAdmin(user)) {
+      alert("관리자 권한이 필요합니다");
+      return;
+    }
     
     try {
       await updateDoc(doc(firestore, "users", userId), {
         isPremium: !currentStatus,
       });
+      // 성공 메시지
+      alert(`프리미엄 상태가 ${!currentStatus ? '설정' : '해제'}되었습니다.`);
       fetchAdminData(); // 데이터 새로고침
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating premium status:", error);
-      alert("프리미엄 상태 변경 중 오류가 발생했습니다");
+      let errorMessage = "프리미엄 상태 변경 중 오류가 발생했습니다";
+      
+      if (error.code === "permission-denied") {
+        errorMessage = "권한이 없습니다. 관리자 권한을 확인해주세요.";
+      } else if (error.message) {
+        errorMessage = `오류: ${error.message}`;
+      }
+      
+      alert(errorMessage);
     }
   };
 

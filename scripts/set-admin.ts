@@ -36,25 +36,43 @@ const db = getFirestore();
 
 async function setAdmin(userEmail: string) {
   try {
+    console.log(`\n🔍 사용자 검색 중: ${userEmail}`);
+    
     const usersRef = db.collection("users");
     const snapshot = await usersRef.where("email", "==", userEmail).get();
     
     if (snapshot.empty) {
-      console.error(`❌ 사용자를 찾을 수 없습니다: ${userEmail}`);
-      console.log("\n💡 사용자 이메일을 확인해주세요.");
+      console.error(`\n❌ 사용자를 찾을 수 없습니다: ${userEmail}`);
+      console.log("\n💡 해결 방법:");
+      console.log("   1. 이메일 주소가 정확한지 확인해주세요");
+      console.log("   2. 해당 이메일로 회원가입이 되어 있는지 확인해주세요");
+      console.log("   3. Firebase Console에서 직접 설정:");
+      console.log("      - Firestore Database → users 컬렉션");
+      console.log("      - 해당 사용자 문서 찾기");
+      console.log("      - isAdmin: true 필드 추가");
       return;
     }
 
-    snapshot.forEach(async (doc) => {
+    console.log(`✅ 사용자를 찾았습니다. (${snapshot.size}개 문서)`);
+    
+    for (const doc of snapshot.docs) {
       await doc.ref.update({ isAdmin: true });
       const userData = doc.data();
-      console.log(`✅ ${userEmail}을(를) 관리자로 설정했습니다.`);
-      console.log(`   이름: ${userData.name}`);
-      console.log(`   회사: ${userData.company}`);
-      console.log(`   유형: ${userData.userType}`);
-    });
+      console.log(`\n✅ ${userEmail}을(를) 관리자로 설정했습니다.`);
+      console.log(`   문서 ID: ${doc.id}`);
+      console.log(`   이름: ${userData.name || "없음"}`);
+      console.log(`   회사: ${userData.company || "없음"}`);
+      console.log(`   유형: ${userData.userType || "없음"}`);
+    }
   } catch (error: any) {
-    console.error("❌ 오류 발생:", error.message);
+    console.error("\n❌ 오류 발생:", error.message);
+    console.error(`   오류 코드: ${error.code || "알 수 없음"}`);
+    if (error.code === "NOT_FOUND") {
+      console.error("\n💡 NOT_FOUND 오류 해결 방법:");
+      console.error("   1. Firestore 데이터베이스가 생성되어 있는지 확인");
+      console.error("   2. users 컬렉션이 존재하는지 확인");
+      console.error("   3. Firebase Console에서 직접 설정하는 것을 권장합니다");
+    }
     process.exit(1);
   }
 }
