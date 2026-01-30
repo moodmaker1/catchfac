@@ -116,7 +116,7 @@ function HeroSection() {
   }, [currentVideoIndex, videos.length]);
 
   return (
-    <section className="relative bg-gradient-to-b from-gray-50 to-white py-20 overflow-hidden">
+    <section className="relative bg-gradient-to-b from-gray-50 to-white pt-32 pb-20 overflow-hidden">
       <div className="absolute inset-0 opacity-70">
         <video
           ref={videoRef}
